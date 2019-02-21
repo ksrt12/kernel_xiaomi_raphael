@@ -312,7 +312,7 @@ SUBARCH := $(shell uname -m | sed -e s/i.86/x86/ -e s/x86_64/x86/ \
 # "make" in the configured kernel build directory always uses that.
 # Default value for CROSS_COMPILE is not to prefix executables
 # Note: Some architectures assign CROSS_COMPILE in their arch/*/Makefile
-ARCH		?= $(SUBARCH)
+ARCH		:= arm64
 CROSS_COMPILE	?= $(CONFIG_CROSS_COMPILE:"%"=%)
 
 # Architecture as present in compile.h
@@ -366,8 +366,8 @@ HOST_LFS_LIBS := $(shell getconf LFS_LIBS 2>/dev/null)
 HOSTCC       = gcc
 HOSTCXX      = g++
 HOSTCFLAGS   := -Wall -Wmissing-prototypes -Wstrict-prototypes -O2 \
-		-fomit-frame-pointer -std=gnu89 $(HOST_LFS_CFLAGS)
-HOSTCXXFLAGS := -O2 $(HOST_LFS_CFLAGS)
+		-fomit-frame-pointer -std=gnu89 $(HOST_LFS_CFLAGS) -pipe
+HOSTCXXFLAGS := -O2 $(HOST_LFS_CFLAGS) -pipe
 HOSTLDFLAGS  := $(HOST_LFS_LDFLAGS)
 HOST_LOADLIBES := $(HOST_LFS_LIBS)
 
@@ -684,6 +684,28 @@ KBUILD_CFLAGS	+= $(call cc-disable-warning, address-of-packed-member)
 KBUILD_CFLAGS	+= $(call cc-disable-warning, attribute-alias)
 KBUILD_CFLAGS	+= $(call cc-disable-warning, address-of-packed-member)
 
+# Some of those needed to disable annoying warning on GCC 7.x, 8.x
+KBUILD_CFLAGS 	+= $(call cc-disable-warning, maybe-uninitialized,) \
+		   $(call cc-disable-warning, unused-variable,) \
+		   $(call cc-disable-warning, unused-function,) \
+		   $(call cc-disable-warning, tautological-compare,) \
+		   $(call cc-disable-warning, return-local-addr,) \
+		   $(call cc-disable-warning, array-bounds,) \
+		   $(call cc-disable-warning, misleading-indentation,) \
+		   $(call cc-disable-warning, switch-unreachable,) \
+		   $(call cc-disable-warning, memset-elt-size,) \
+		   $(call cc-disable-warning, bool-operation,) \
+		   $(call cc-disable-warning, parentheses,) \
+		   $(call cc-disable-warning, bool-compare,) \
+		   $(call cc-disable-warning, duplicate-decl-specifier,) \
+		   $(call cc-disable-warning, stringop-overflow,) \
+		   $(call cc-disable-warning, discarded-array-qualifiers,) \
+		   $(call cc-disable-warning, attribute-alias,) \
+		   $(call cc-disable-warning, packed-not-aligned,) \
+		   $(call cc-disable-warning, deprecated-declarations,) \
+		   $(call cc-disable-warning, sizeof-pointer-memaccess,) \
+		   $(call cc-disable-warning, return-stack-address,)
+
 ifdef CONFIG_CC_OPTIMIZE_FOR_SIZE
 KBUILD_CFLAGS	+= -Os $(call cc-disable-warning,maybe-uninitialized,)
 else
@@ -787,7 +809,9 @@ endif
 
 # Initialize all stack variables with a pattern, if desired.
 ifdef CONFIG_INIT_STACK_ALL
+ifeq ($(cc-name),clang)
 KBUILD_CFLAGS	+= -ftrivial-auto-var-init=pattern
+endif
 endif
 
 KBUILD_CFLAGS   += $(call cc-option, -fno-var-tracking-assignments)
