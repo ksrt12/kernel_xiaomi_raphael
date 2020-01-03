@@ -193,6 +193,7 @@ static enum tfa_error tfa98xx_tfa_start(struct tfa98xx *tfa98xx, int next_profil
 	ktime_t start_time, stop_time;
 	u64 delta_time;
 
+	start_time = 0;
 	if (trace_level & 8) {
 		start_time = ktime_get_boottime();
 	}
