@@ -1456,7 +1456,7 @@ int wma_csa_offload_handler(void *handle, uint8_t *event, uint32_t len)
 		csa_offload_event->new_ch_width = wb_ie->new_ch_width;
 		csa_offload_event->new_ch_freq_seg1 = wb_ie->new_ch_freq_seg1;
 		csa_offload_event->new_ch_freq_seg2 = wb_ie->new_ch_freq_seg2;
-	} else if (csa_event->ies_present_flag &
+	} /*else if (csa_event->ies_present_flag &
 		   WMI_CSWRAP_IE_EXTENDED_PRESENT) {
 		wb_ie = (struct ieee80211_ie_wide_bw_switch *)
 				wma_parse_ch_switch_wrapper_ie(
@@ -1470,7 +1470,7 @@ int wma_csa_offload_handler(void *handle, uint8_t *event, uint32_t len)
 						wb_ie->new_ch_freq_seg2;
 			csa_event->ies_present_flag |= WMI_WBW_IE_PRESENT;
 		}
-	}
+	}*/
 
 	csa_offload_event->ies_present_flag = csa_event->ies_present_flag;
 
