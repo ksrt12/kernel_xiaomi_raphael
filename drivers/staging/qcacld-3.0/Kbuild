@@ -2142,6 +2142,9 @@ ifdef CONFIG_TGT_NUM_MSDU_DESC
 ccflags-y += -DCFG_TGT_NUM_MSDU_DESC=$(CONFIG_TGT_NUM_MSDU_DESC)
 endif
 
+CONFIG_WLAN_MAX_VDEVS ?= 6
+ccflags-y += -DWLAN_MAX_VDEVS=$(CONFIG_WLAN_MAX_VDEVS)
+
 KBUILD_CPPFLAGS += $(cppflags-y)
 
 # Currently, for versions of gcc which support it, the kernel Makefile
@@ -2187,11 +2190,11 @@ endif
 
 # inject some build related information
 ifeq ($(CONFIG_BUILD_TAG), y)
-CMN_IDS = $(shell echo "I2fd19ec0620deaad12a9b6f7f48b4d79b561bcba"| \
+CMN_IDS = $(shell echo "I382dbde5275cd1adb642efc26e2790427f9dc7fd"| \
 		sed -nE 's/^\s*(I[0-f]{10})[0-f]{30}\s*$$/\1/p' | \
 		paste -sd "," -)
 
-CMN_IDS = $(shell echo "I807dd83602f368f07aefc800a48098d711828c8c"| \
+CMN_IDS = $(shell echo "Icba897ad7b8be31c53c6900d76b995ea9e32ea5c"| \
 		sed -nE 's/^\s*(I[0-f]{10})[0-f]{30}\s*$$/\1/p' | \
 		paste -sd "," -)
 
